@@ -5,7 +5,7 @@ tiny social creativity
 ## apps
 
 web: ([alpha](https://sillyz.computer))
-windows, macos, linux: coming soon.
+windows, macos, linux: imminent
 android, ios: coming later.
 
 ## development
