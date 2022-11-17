@@ -18018,10 +18018,12 @@
     const { file, fetching } = $2.read();
     if (!file && !fetching) {
       $2.write({ fetching: true });
-      fetch(link).then((res) => res.json()).then(({ file: file2 }) => $2.write({ file: file2, fetching: false }));
+      fetch(link).then((res) => res.json()).then(({ file: file2 }) => {
+        $2.write({ file: file2, fetching: false });
+      });
       return;
     }
-    if (!target.view) {
+    if (file && !target.view) {
       target.innerHTML = `
       <button class="publish">Publish</button>
     `;

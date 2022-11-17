@@ -31,11 +31,13 @@ $.render(target => {
     $.write({ fetching: true })
     fetch(link)
       .then(res => res.json())
-      .then(({ file }) => $.write({ file, fetching: false }))
+      .then(({ file }) => {
+        $.write({ file, fetching: false })
+      })
     return
   }
 
-  if(!target.view) {
+  if(file && !target.view) {
     target.innerHTML = `
       <button class="publish">Publish</button>
     `
