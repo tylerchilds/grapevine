@@ -7,13 +7,9 @@ const ENUMS = [
   { command: 'upload' },
 ]
 
-function execute(command) {
-  alert(`executed ${command}`)
-}
-
-
 const $ = module('console-module', {
-  filter: ''
+  filter: '',
+  pattern: '-----'
 })
 
 $.on('click', '.item', function update(event) {
@@ -21,7 +17,8 @@ $.on('click', '.item', function update(event) {
   const args = attributes(event.target, $)
 
   const { command } = event.target.dataset
-  execute(command)
+
+  console.log(command)
 
   args.root.trap.deactivate();
 })
@@ -38,7 +35,7 @@ $.render(target => {
 		});
 	}
 
-  const { filter } = $.read()
+  const { filter, pattern } = $.read()
   const choices = []
 
   const list = ENUMS
@@ -55,11 +52,12 @@ $.render(target => {
     </button>
   `
 
+  const buttons = [...new Array(5)].map(() => '<button class="b1"></button>').join('')
+
   return `
     <button class="bar">
       'run: ' ${choices.map(x => x.command).join(', ')}
     </button>
-
     <div class="filterable-list">
       <div class="filter-area">
         <input type="text" name="filter" placeholder="Search" value="${filter}" />
@@ -69,6 +67,11 @@ $.render(target => {
         ${customOption}
       </div>
     </div>
+    ${buttons}
+
+    <code-module src="/edge/patterns/${pattern}.js"></code-module>
+    <button class="undo">undo</button>
+    <button class="do">do</button>
   `
 })
 
