@@ -922,17 +922,15 @@
     { command: "download" },
     { command: "upload" }
   ];
-  function execute(command2) {
-    alert(`executed ${command2}`);
-  }
   var $ = module("console-module", {
-    filter: ""
+    filter: "",
+    pattern: "-----"
   });
   $.on("click", ".item", function update2(event) {
     event.preventDefault();
     const args = attributes(event.target, $);
     const { command: command2 } = event.target.dataset;
-    execute(command2);
+    console.log(command2);
     args.root.trap.deactivate();
   });
   $.on("click", ".bar", toggleActive);
@@ -945,7 +943,7 @@
         clickOutsideDeactivates: true
       });
     }
-    const { filter } = $.read();
+    const { filter, pattern } = $.read();
     const choices = [];
     const list = ENUMS.filter((x) => x.command.toLowerCase().indexOf(filter.toLowerCase()) > -1).map((x) => `
       <button class="item" data-command="${x.command}">
@@ -957,11 +955,11 @@
       ${filter}
     </button>
   `;
+    const buttons = [...new Array(5)].map(() => '<button class="b1"></button>').join("");
     return `
     <button class="bar">
       'run: ' ${choices.map((x) => x.command).join(", ")}
     </button>
-
     <div class="filterable-list">
       <div class="filter-area">
         <input type="text" name="filter" placeholder="Search" value="${filter}" />
@@ -971,6 +969,11 @@
         ${customOption}
       </div>
     </div>
+    ${buttons}
+
+    <code-module src="/edge/patterns/${pattern}.js"></code-module>
+    <button class="undo">undo</button>
+    <button class="do">do</button>
   `;
   });
   function attributes(node, $7) {
@@ -18012,9 +18015,10 @@
   $2.render((target) => {
     const link = target.getAttribute("src");
     console.log(link);
-    const { file } = $2.read();
-    if (!file) {
-      fetch(link).then((res) => res.json()).then(({ file: file2 }) => $2.write({ file: file2 }));
+    const { file, fetching } = $2.read();
+    if (!file && !fetching) {
+      $2.write({ fetching: true });
+      fetch(link).then((res) => res.json()).then(({ file: file2 }) => $2.write({ file: file2, fetching: false }));
       return;
     }
     if (!target.view) {

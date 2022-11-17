@@ -25,12 +25,13 @@ $.on('click', '.publish', (event) => {
 $.render(target => {
   const link = target.getAttribute('src')
   console.log(link)
-  const { file } = $.read()
+  const { file, fetching } = $.read()
 
-  if(!file) {
+  if(!file && !fetching) {
+    $.write({ fetching: true })
     fetch(link)
       .then(res => res.json())
-      .then(({ file }) => $.write({ file }))
+      .then(({ file }) => $.write({ file, fetching: false }))
     return
   }
 
